@@ -6,6 +6,7 @@
 from Tkinter import *
 from ttk import *
 from xml.dom.minidom import Document
+import os.path
 
 class Part:
     def __init__(self, width, length, pinWidth, pinLength, pinPitch, pinCountY, pinCountX, smdPadWidth, smdPadLength, smdPadOffset, thermalPadWidth, thermalPadLength, innerPins):
@@ -32,6 +33,7 @@ class Part:
 defaults={}
 defaults['QFN']  = [3.0, 3.0, .24,   .4,  .5,  4,  4, .38,  .85, 0.4, 1.7, 1.7, True]   #TPS62133
 defaults['LQFP'] = [7.0, 7.0, .22,  1.0,  .5, 12, 12, .36, 1.07, 0.0, 0.0, 0.0, False]  #LM3S811
+defaults['TSSOP'] = [12.50, 6.10, 0.22, 1.0, 0.50, 0, 24, 0.30, 2.30, 0.75, 0, 0, False] # JEDEC MO-153, 6.1mm wide, Fairchild PN MTD48
 #defaults['SOIC'] = [4.0, 4.0,  .3, .625, .65,  8,  0, .44, .765, 0.0, 0.0, 0.0, False]  #
 
 class App:
@@ -244,7 +246,7 @@ class App:
 
     ## Part Image  ##
         
-        self.gif = PhotoImage(file = "images\qfp.gif")
+        self.gif = PhotoImage(file = os.path.join("images","qfp.gif"))
         self.img.create_image(0, 0, image = self.gif, anchor=NW)
         
     def updateCanvas(self, event):

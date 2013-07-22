@@ -5,6 +5,7 @@
 
 from Tkinter import *
 from ttk import *
+from tkFileDialog import asksaveasfilename
 from xml.dom.minidom import Document
 import os.path
 
@@ -171,6 +172,13 @@ class App:
         scrollbar = Scrollbar(self.b4)
         scrollbar.grid(row=0, column=1, sticky=N+S+W+E)
         self.eagle_xml.configure(yscrollcommand=scrollbar.set)
+
+        buttonBar = Frame(self.b4)
+        buttonBar.grid(row=1,column=0, sticky=S+W+E)
+        self.copyButton = Button(buttonBar, text="Copy to clipboard", command=self.copyToClip)
+        self.copyButton.pack(side=RIGHT)
+        self.saveButton = Button(buttonBar, text="Save as...", command=self.saveTo)
+        self.saveButton.pack(side=RIGHT)
         
     ## Initialize UI Elements
         
@@ -387,7 +395,22 @@ class App:
             
         except ValueError:
             print "OFuck."
-            
+
+    def copyToClip(self, *args):
+        if self.doc:
+            self.master.clipboard_clear()
+            self.master.clipboard_append(self.doc.toprettyxml(indent=""))
+
+
+    def saveTo(self, *args):
+        if self.doc:
+            fts = [ ('Eagle 6 XML fragment','*.xml') ]
+            path = asksaveasfilename(parent=self.master,filetypes=fts,title='Save footprint as...')
+            if path:
+                f = open(path,'w')
+                f.write(self.doc.toprettyxml(indent=""))
+                f.close()
+
     def generateXML(self, *args):
         # Clear XML
         self.eagle_xml.delete(0.0, END)
@@ -500,7 +523,10 @@ class App:
             
             # Direction Indicator
             self.xmlAppendRectangle(doc, package, -part.width/2.0, part.length/2.0, 0, 0, 51)
-                
+            
+            # Cache XML document
+            self.doc = doc
+
             # Print XML
             self.eagle_xml.insert(0.0, doc.toprettyxml(indent=""))
             
